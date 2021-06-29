@@ -30,7 +30,12 @@
     // Do any additional setup after loading the view.
 
     self.nameLabel.text = self.tweet.user.name;
-    self.screenNameLabel.text = self.tweet.user.screenName;
+    
+    //add "@" to screen name
+    NSString *partialString = self.tweet.user.screenName;
+    NSString *fullScreenName = [@"@" stringByAppendingString:partialString];
+    self.screenNameLabel.text = fullScreenName;
+    
     self.timeLabel.text = self.tweet.createdAtString;
     self.tweetBodyLabel.text = self.tweet.text;
     

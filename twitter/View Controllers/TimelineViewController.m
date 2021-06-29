@@ -145,7 +145,13 @@
     }
     
     cell.usernameLabel.text = tweet.user.name;
-    cell.screenNameLabel.text = tweet.user.screenName;
+    
+    //add "@" to screen name
+    NSString *partialString = tweet.user.screenName;
+    NSString *fullScreenName = [@"@" stringByAppendingString:partialString];
+    cell.screenNameLabel.text = fullScreenName;
+    
+//    cell.screenNameLabel.text = tweet.user.screenName;
     cell.timeStampLabel.text = tweet.createdAtString;
     NSLog(@"Time Label: ");
     NSLog(@"%@", tweet.createdAtString);

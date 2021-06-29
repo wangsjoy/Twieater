@@ -90,6 +90,18 @@ static NSString * const baseURLString = @"https://api.twitter.com";
     }];
 }
 
+- (void)unfavorite:(Tweet *)tweet completion:(void (^)(Tweet *, NSError *))completion{
+    NSLog(@"%@", tweet);
+    NSString *urlString = @"1.1/favorites/destroy.json";
+    NSDictionary *parameters = @{@"id": tweet.idStr};
+    [self POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+        Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
+        completion(tweet, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+
 - (void)retweet:(Tweet *)tweet completion:(void (^)(Tweet *, NSError *))completion{
     
 // https://api.twitter.com/1.1/statuses/retweet/:id.json
@@ -98,6 +110,29 @@ static NSString * const baseURLString = @"https://api.twitter.com";
     
     NSLog(@"%@", tweet);
     NSString *firstURLString = @"1.1/statuses/retweet/";
+    NSString *firstAppendURL = [firstURLString stringByAppendingString:tweet.idStr];
+    NSString *lastURLString = @".json";
+    NSString *urlString = [firstAppendURL stringByAppendingString:lastURLString];
+    NSLog(@"Requested String: ");
+    NSLog(@"%@", urlString);
+    
+//    NSDictionary *parameters = @{@"id": tweet.idStr};
+    [self POST:urlString parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+        Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
+        completion(tweet, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+
+- (void)unretweet:(Tweet *)tweet completion:(void (^)(Tweet *, NSError *))completion{
+    
+// https://api.twitter.com/1.1/statuses/retweet/:id.json
+    //'https://api.twitter.com/1.1/statuses/retweet/TWEET_ID.json'
+
+    
+    NSLog(@"%@", tweet);
+    NSString *firstURLString = @"1.1/statuses/unretweet/";
     NSString *firstAppendURL = [firstURLString stringByAppendingString:tweet.idStr];
     NSString *lastURLString = @".json";
     NSString *urlString = [firstAppendURL stringByAppendingString:lastURLString];
