@@ -14,7 +14,7 @@
 #import "Tweet.h"
 #import "UIImageView+AFNetworking.h"
 #import "ComposeViewController.h"
-#import "DateTools.h"
+#import "DetailsViewController.h"
 
 @interface TimelineViewController () <ComposeViewControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -102,9 +102,21 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    UINavigationController *navigationController = [segue destinationViewController];
-    ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
-    composeController.delegate = self;
+        
+    if ([segue.identifier isEqualToString:@"ComposeSegue"]){
+        NSLog(@"Entering Compose State");
+        UINavigationController *navigationController = [segue destinationViewController];
+        ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
+        composeController.delegate = self;
+    } else if ([segue.identifier isEqualToString:@"DetailsSegue"]){
+        NSLog(@"Entering Tweet Details");
+        DetailsViewController *detailsViewController = [segue destinationViewController];
+        UITableViewCell *tappedCell = sender; //sender is just table view cell that was tapped on
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:tappedCell]; //grabs index path
+        Tweet *tweet = self.arrayOfTweets[indexPath.row]; //right tweet associated with right row
+        detailsViewController.tweet = tweet;
+
+    }
 }
 
 
