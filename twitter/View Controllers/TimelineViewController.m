@@ -14,6 +14,7 @@
 #import "Tweet.h"
 #import "UIImageView+AFNetworking.h"
 #import "ComposeViewController.h"
+#import "DateTools.h"
 
 @interface TimelineViewController () <ComposeViewControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -134,6 +135,9 @@
     cell.usernameLabel.text = tweet.user.name;
     cell.screenNameLabel.text = tweet.user.screenName;
     cell.timeStampLabel.text = tweet.createdAtString;
+    NSLog(@"Time Label: ");
+    NSLog(@"%@", tweet.createdAtString);
+        
     cell.bodyLabel.text = tweet.text;
     cell.tweet = tweet;
         
