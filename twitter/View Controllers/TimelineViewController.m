@@ -13,10 +13,9 @@
 #import "TweetCell.h"
 #import "Tweet.h"
 #import "UIImageView+AFNetworking.h"
+#import "ComposeViewController.h"
 
-
-
-@interface TimelineViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface TimelineViewController () <ComposeViewControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *arrayOfTweets;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
@@ -55,6 +54,11 @@
      */
 }
 
+- (void)didTweet:(Tweet *)tweet{
+    [self.arrayOfTweets addObject:tweet];
+    [self.tableView reloadData];
+}
+
 - (void)fetchTweets {
     // Get timeline
     [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray *tweets, NSError *error) {
@@ -79,18 +83,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
-- (IBAction)onTapLogout:(UIButton *)sender {
+- (IBAction)onTapLogout:(id)sender {
     NSLog(@"Entering On Tap");
     // TimelineViewController.m
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
@@ -102,15 +95,59 @@
 }
 
 
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+    UINavigationController *navigationController = [segue destinationViewController];
+    ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
+    composeController.delegate = self;
+}
+
+
+
+
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     //code
     TweetCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TweetCell"];
     Tweet *tweet = self.arrayOfTweets[indexPath.row]; //right tweet associated with right row
+    if (tweet.favorited){
+        //highlight the heart icon
+        NSLog(@"Favorited Already");
+        [cell.likeButton setSelected:YES];
+    } else {
+        NSLog(@"Not Favorited yet");
+        [cell.likeButton setSelected:NO];
+    }
+    if (tweet.retweeted){
+        //highlight the retweet icon
+        NSLog(@"Retweeted Already");
+        [cell.retweetButton setSelected:YES];
+    } else {
+        NSLog(@"Not Retweeted yet");
+        [cell.retweetButton setSelected:NO];
+    }
+    
     cell.usernameLabel.text = tweet.user.name;
     cell.screenNameLabel.text = tweet.user.screenName;
     cell.timeStampLabel.text = tweet.createdAtString;
     cell.bodyLabel.text = tweet.text;
+    cell.tweet = tweet;
+        
+    int retweetCount = tweet.retweetCount;
+    NSString* retweetCountString = [NSString stringWithFormat:@"%i", retweetCount];
+    [cell.retweetButton setTitle:retweetCountString forState:UIControlStateNormal];
+    NSLog(@"Retweet Count: ");
+    NSLog(@"%@", retweetCountString);
+    
+    int likeCount = tweet.favoriteCount;
+    NSString* likeCountString = [NSString stringWithFormat:@"%i", likeCount];
+    [cell.likeButton setTitle:likeCountString forState:UIControlStateNormal];
+    NSLog(@"Like Count: ");
+    NSLog(@"%@", likeCountString);
     
     NSString *URLString = tweet.user.profilePicture;
     NSURL *url = [NSURL URLWithString:URLString];
