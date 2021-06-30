@@ -54,7 +54,7 @@
             </objects>
             <point key="canvasLocation" x="32.799999999999997" y="37.331334332833585"/>
         </scene>
-        <!--Home Timeline-->
+        <!--Home-->
         <scene sceneID="1Tv-nE-1AW">
             <objects>
                 <viewController storyboardIdentifier="TimelineViewController" id="Lbl-k5-U4i" customClass="TimelineViewController" sceneMemberID="viewController">
@@ -185,7 +185,7 @@
                         </constraints>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Home Timeline" id="MOc-fV-EZE">
+                    <navigationItem key="navigationItem" title="Home" id="MOc-fV-EZE">
                         <barButtonItem key="leftBarButtonItem" title="Logout" id="ltQ-qR-a6i">
                             <connections>
                                 <action selector="onTapLogout:" destination="Lbl-k5-U4i" id="x3L-Bk-Cs7"/>
@@ -241,6 +241,13 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="16/140 characters" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h0C-4P-dLh">
+                                <rect key="frame" x="214" y="327" width="181" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="k4g-4u-pMX"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -258,12 +265,13 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="characterCountLabel" destination="h0C-4P-dLh" id="3z4-4F-sv7"/>
                         <outlet property="tweetBodyView" destination="wdn-Ie-hXw" id="DF9-e1-M3o"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Axb-Gs-djn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3210" y="36"/>
+            <point key="canvasLocation" x="3208.6956521739135" y="35.491071428571423"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="3WW-Ze-ThP">

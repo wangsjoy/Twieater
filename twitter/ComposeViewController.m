@@ -14,6 +14,7 @@
 
 @interface ComposeViewController ()
 @property (weak, nonatomic) IBOutlet UITextView *tweetBodyView;
+@property (weak, nonatomic) IBOutlet UILabel *characterCountLabel;
 
 @end
 
@@ -22,25 +23,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.tweetBodyView.delegate = self;
+
 }
 - (IBAction)onClose:(id)sender {
     [self dismissViewControllerAnimated:true completion:nil];
 }
 - (IBAction)didTapPost:(id)sender {
-//    [[APIManager shared] postStatusWithText:self.tweetBodyView.text completion:^(Tweet *postedTweet, NSError *error){
-//        if (postedTweet){
-//            
-//            //move back to timeline view controller
-//            AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-//            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//            TimelineViewController *timelineViewController = [storyboard instantiateViewControllerWithIdentifier:@"TimelineViewController"];
-//            appDelegate.window.rootViewController = timelineViewController;
-//            
-//            NSLog(@"successfully posted");
-//        } else {
-//            NSLog(@"error posting");
-//        }
-//    }];
     
     [[APIManager shared]postStatusWithText:self.tweetBodyView.text completion:^(Tweet *tweet, NSError *error) {
         if(error){
@@ -56,6 +45,29 @@
             NSLog(@"Compose Tweet Success!");
         }
     }];
+    
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
+    // TODO: Check the proposed new text character count
+    
+    // TODO: Allow or disallow the new text
+    
+    // Set the max character limit
+    int characterLimit = 140;
+
+    // Construct what the new text would be if we allowed the user's latest edit
+    NSString *newText = [self.tweetBodyView.text stringByReplacingCharactersInRange:range withString:text];
+
+    // TODO: Update character count label
+    NSString *lastURLString = @"/140 characters";
+    NSString *characterCountString = [NSString stringWithFormat:@"%i", newText.length];
+    NSString *fullString = [characterCountString stringByAppendingString:lastURLString];
+    self.characterCountLabel.text = fullString;
+
+    // Should the new text should be allowed? True/False
+    NSLog(@"%d", newText.length < characterLimit);
+    return newText.length < characterLimit;
     
 }
 
