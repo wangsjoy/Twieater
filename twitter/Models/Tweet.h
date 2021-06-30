@@ -21,6 +21,9 @@
 @property (nonatomic, strong) User *user; // Contains Tweet author's name, screenname, etc.
 @property (nonatomic, strong) NSString *createdAtString; // Display date
 
+//added reply count property (premium feature)
+//@property (nonatomic) int replyCount; // Update reply count label
+
 // For Retweets
 @property (nonatomic, strong) User *retweetedByUser;  // user who retweeted if tweet is retweet
 

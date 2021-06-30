@@ -15,6 +15,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "ComposeViewController.h"
 #import "DetailsViewController.h"
+#import "ReplyViewController.h"
 
 @interface TimelineViewController () <ComposeViewControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -116,6 +117,18 @@
         Tweet *tweet = self.arrayOfTweets[indexPath.row]; //right tweet associated with right row
         detailsViewController.tweet = tweet;
 
+    } else if ([segue.identifier isEqualToString:@"ReplySegue"]){
+        //code
+        UINavigationController *navigationController = [segue destinationViewController];
+        ReplyViewController *replyViewController = (ReplyViewController*)navigationController.topViewController;
+        replyViewController.delegate = self;
+//        ReplyViewController *replyViewController = [segue destinationViewController];
+        UIButton *tappedButton = sender; //sender is just button that was tapped on
+        NSLog(@"Index Path for Tapped Button: ");
+        NSLog(@"%i", tappedButton.tag);
+        NSLog(@"%@", self.arrayOfTweets[tappedButton.tag]);
+        Tweet *tweet = self.arrayOfTweets[tappedButton.tag];
+        replyViewController.tweet = tweet;
     }
 }
 
@@ -151,7 +164,6 @@
     NSString *fullScreenName = [@"@" stringByAppendingString:partialString];
     cell.screenNameLabel.text = fullScreenName;
     
-//    cell.screenNameLabel.text = tweet.user.screenName;
     cell.timeStampLabel.text = tweet.createdAtString;
     NSLog(@"Time Label: ");
     NSLog(@"%@", tweet.createdAtString);
@@ -170,6 +182,18 @@
     [cell.likeButton setTitle:likeCountString forState:UIControlStateNormal];
     NSLog(@"Like Count: ");
     NSLog(@"%@", likeCountString);
+    
+    
+    //reply count is part of premium package of API, so can't change title
+//    int replyCount = tweet.replyCount;
+//    NSString* replyCountString = [NSString stringWithFormat:@"%i", replyCount];
+//    [cell.replyButton setTitle:replyCountString forState:UIControlStateNormal];
+//    NSLog(@"Reply Count: ");
+//    NSLog(@"%@", replyCountString);
+    
+    //assign button tag as index:
+    cell.replyButton.tag = indexPath.row;
+
     
     NSString *URLString = tweet.user.profilePicture;
     NSURL *url = [NSURL URLWithString:URLString];

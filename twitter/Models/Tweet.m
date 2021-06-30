@@ -33,6 +33,9 @@
          self.retweetCount = [dictionary[@"retweet_count"] intValue];
          self.retweeted = [dictionary[@"retweeted"] boolValue];
          
+         //added for reply count (premium feature)
+//         self.replyCount = [dictionary[@"reply_count"] intValue];
+                  
          // TODO: initialize user
          // initialize user
          NSDictionary *user = dictionary[@"user"];
