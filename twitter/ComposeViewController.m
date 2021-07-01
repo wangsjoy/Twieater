@@ -22,7 +22,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    //assign delegate
     self.tweetBodyView.delegate = self;
 
 }
@@ -31,6 +32,7 @@
 }
 - (IBAction)didTapPost:(id)sender {
     
+    //use APIManager to post composed tweet
     [[APIManager shared]postStatusWithText:self.tweetBodyView.text completion:^(Tweet *tweet, NSError *error) {
         if(error){
             NSLog(@"Error composing Tweet: %@", error.localizedDescription);

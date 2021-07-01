@@ -22,21 +22,21 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    //assign delegate
     self.replyBodyView.delegate = self;
     
-    //initialize text in textView with @screen_name
+    //initialize text in textView with @screen_name, add "@" to screen name
     NSString *noAtScreenName = self.tweet.user.screenName;
-    //add "@" to screen name
     NSString *screenName = [@"@" stringByAppendingString:noAtScreenName];
     self.replyBodyView.text = screenName;
     
+    //iitialize character count label
     NSUInteger length = [screenName length];
     NSString *lastURLString = @"/140 characters";
     NSString *characterCountString = [NSString stringWithFormat:@"%i", length];
     NSString *fullString = [characterCountString stringByAppendingString:lastURLString];
     self.characterCountLabel.text = fullString;
-    
     
 }
 
@@ -46,6 +46,7 @@
 
 - (IBAction)didTapReply:(id)sender {
     
+    //use APIManager to reply to tweet
     [[APIManager shared]postReplyWithText:self.replyBodyView.text forTweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
         if(error){
             NSLog(@"Error composing Tweet: %@", error.localizedDescription);
@@ -84,7 +85,6 @@
     return newText.length < characterLimit;
     
 }
-
 
 /*
 #pragma mark - Navigation

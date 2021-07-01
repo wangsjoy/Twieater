@@ -28,32 +28,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //assign delegate and datasource
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     [self fetchTweets];
-    
     
     self.refreshControl = [[UIRefreshControl alloc] init]; //instantiate refreshControl
     [self.refreshControl addTarget:self action:@selector(fetchTweets) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.refreshControl atIndex:0]; //so that the refresh icon doesn't hover over any cells
     
-    /*
-    // Get timeline
-    [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray *tweets, NSError *error) {
-        if (tweets) {
-            self.arrayOfTweets = tweets;
-            [self.tableView reloadData];
-            NSLog(@"😎😎😎 Successfully loaded home timeline");
-//            for (NSDictionary *dictionary in tweets) {
-//                NSString *text = dictionary[@"text"];
-//                NSLog(@"%@", text);
-//            }
-            [self.refreshControl endRefreshing]; //end refreshing
-        } else {
-            NSLog(@"😫😫😫 Error getting home timeline: %@", error.localizedDescription);
-        }
-    }];
-     */
 }
 
 - (void)didTweet:(Tweet *)tweet{
@@ -68,10 +51,6 @@
             self.arrayOfTweets = tweets;
             [self.tableView reloadData];
             NSLog(@"😎😎😎 Successfully loaded home timeline");
-//            for (NSDictionary *dictionary in tweets) {
-//                NSString *text = dictionary[@"text"];
-//                NSLog(@"%@", text);
-//            }
             [self.refreshControl endRefreshing]; //end refreshing
         } else {
             NSLog(@"😫😫😫 Error getting home timeline: %@", error.localizedDescription);
@@ -87,9 +66,9 @@
 
 - (IBAction)onTapLogout:(id)sender {
     NSLog(@"Entering On Tap");
-    // TimelineViewController.m
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
 
+    //go to loginViewController
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     LoginViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
     appDelegate.window.rootViewController = loginViewController;
@@ -103,7 +82,6 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-        
     if ([segue.identifier isEqualToString:@"ComposeSegue"]){
         NSLog(@"Entering Compose State");
         UINavigationController *navigationController = [segue destinationViewController];
@@ -115,45 +93,39 @@
         UITableViewCell *tappedCell = sender; //sender is just table view cell that was tapped on
         NSIndexPath *indexPath = [self.tableView indexPathForCell:tappedCell]; //grabs index path
         Tweet *tweet = self.arrayOfTweets[indexPath.row]; //right tweet associated with right row
-        detailsViewController.tweet = tweet;
-
+        detailsViewController.tweet = tweet; //pass tweet to detailsViewController
     } else if ([segue.identifier isEqualToString:@"ReplySegue"]){
         //code
         UINavigationController *navigationController = [segue destinationViewController];
         ReplyViewController *replyViewController = (ReplyViewController*)navigationController.topViewController;
         replyViewController.delegate = self;
-//        ReplyViewController *replyViewController = [segue destinationViewController];
         UIButton *tappedButton = sender; //sender is just button that was tapped on
-        NSLog(@"Index Path for Tapped Button: ");
-        NSLog(@"%i", tappedButton.tag);
-        NSLog(@"%@", self.arrayOfTweets[tappedButton.tag]);
         Tweet *tweet = self.arrayOfTweets[tappedButton.tag];
-        replyViewController.tweet = tweet;
+        replyViewController.tweet = tweet; //pass tweet to replyViewController
     }
 }
 
 
-
-
-
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    //code
+
     TweetCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TweetCell"];
     Tweet *tweet = self.arrayOfTweets[indexPath.row]; //right tweet associated with right row
+    
+    //if favorited/retweeted, change the icon selection accordingly
     if (tweet.favorited){
         //highlight the heart icon
-        NSLog(@"Favorited Already");
+//        NSLog(@"Favorited Already");
         [cell.likeButton setSelected:YES];
     } else {
-        NSLog(@"Not Favorited yet");
+//        NSLog(@"Not Favorited yet");
         [cell.likeButton setSelected:NO];
     }
     if (tweet.retweeted){
         //highlight the retweet icon
-        NSLog(@"Retweeted Already");
+//        NSLog(@"Retweeted Already");
         [cell.retweetButton setSelected:YES];
     } else {
-        NSLog(@"Not Retweeted yet");
+//        NSLog(@"Not Retweeted yet");
         [cell.retweetButton setSelected:NO];
     }
     
@@ -165,40 +137,25 @@
     cell.screenNameLabel.text = fullScreenName;
     
     cell.timeStampLabel.text = tweet.createdAtString;
-    NSLog(@"Time Label: ");
-    NSLog(@"%@", tweet.createdAtString);
-        
+
     cell.bodyLabel.text = tweet.text;
     cell.tweet = tweet;
         
     int retweetCount = tweet.retweetCount;
     NSString* retweetCountString = [NSString stringWithFormat:@"%i", retweetCount];
     [cell.retweetButton setTitle:retweetCountString forState:UIControlStateNormal];
-    NSLog(@"Retweet Count: ");
-    NSLog(@"%@", retweetCountString);
     
     int likeCount = tweet.favoriteCount;
     NSString* likeCountString = [NSString stringWithFormat:@"%i", likeCount];
     [cell.likeButton setTitle:likeCountString forState:UIControlStateNormal];
-    NSLog(@"Like Count: ");
-    NSLog(@"%@", likeCountString);
     
-    
-    //reply count is part of premium package of API, so can't change title
-//    int replyCount = tweet.replyCount;
-//    NSString* replyCountString = [NSString stringWithFormat:@"%i", replyCount];
-//    [cell.replyButton setTitle:replyCountString forState:UIControlStateNormal];
-//    NSLog(@"Reply Count: ");
-//    NSLog(@"%@", replyCountString);
-    
-    //assign button tag as index:
+    //assign button tag as index (for segue purposes - refer to prepareForSegue):
     cell.replyButton.tag = indexPath.row;
-
     
+    //load in user photo
     NSString *URLString = tweet.user.profilePicture;
     NSURL *url = [NSURL URLWithString:URLString];
     NSData *urlData = [NSData dataWithContentsOfURL:url];
-    
     cell.profileView.image = nil; //reset last image
     [cell.profileView setImageWithURL:url];
     return cell;
