@@ -10,6 +10,9 @@
 #import "UIImageView+AFNetworking.h"
 #import "Tweet.h"
 #import "APIManager.h"
+#import "ReplyViewController.h"
+#import "AppDelegate.h"
+#import "TimelineViewController.h"
 
 
 @interface DetailsViewController ()
@@ -20,6 +23,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 @property (weak, nonatomic) IBOutlet UIButton *retweetButton;
 @property (weak, nonatomic) IBOutlet UIButton *favoriteButton;
+@property (weak, nonatomic) IBOutlet UIButton *replyButton;
 
 @end
 
@@ -175,16 +179,29 @@
     }
 }
 
+- (IBAction)didTapReply:(id)sender {
+}
 
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    if ([segue.identifier isEqualToString:@"ReplySegue"]){
+        UINavigationController *navigationController = [segue destinationViewController];
+        ReplyViewController *replyViewController = (ReplyViewController*)navigationController.topViewController;
+        
+        //added code to resolve delegate issue
+        TimelineViewController *timelineViewController;
+        replyViewController.delegate = timelineViewController;
+        
+//        replyViewController.delegate = self;
+        replyViewController.tweet = self.tweet;
+    }
 }
-*/
+
 
 @end

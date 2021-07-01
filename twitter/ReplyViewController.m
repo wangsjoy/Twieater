@@ -37,8 +37,6 @@
 
 - (IBAction)didTapReply:(id)sender {
     
-    
-    
     [[APIManager shared]postReplyWithText:self.replyBodyView.text forTweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
         if(error){
             NSLog(@"Error composing Tweet: %@", error.localizedDescription);
