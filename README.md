@@ -65,6 +65,10 @@ Here's a walkthrough of implemented user stories:
 ![](https://i.imgur.com/hJMhMVP.gif)
 (Backup Link: https://media.giphy.com/media/Q6jRvXNydtcpyKFhRI/giphy.gif)
 
+* Demo of Stylized App Icon and Logout:
+![](https://i.imgur.com/fjkHpWW.gif)
+
+
 GIF created with [Giphy](https://giphy.com).
 
 ## Notes
